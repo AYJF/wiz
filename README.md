@@ -15,8 +15,7 @@ and the Flutter guide for
 
 💥 A Dart connector for WiZ devices.💥
 
-![FL Chart Logo](https://github.com/imaNNeo/fl_chart/raw/master/repo_files/images/landing_logo.jpg)
-![FL Chart Logo](https://www.wizconnected.com/content/dam/wiz/master/logo-wiz-white.svg)
+
 
 
 TODO: Put a short description of the package here that helps potential users
