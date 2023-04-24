@@ -1,7 +1,6 @@
 name: wiz
 description: A Dart connector for WiZ devices
 version: 0.0.1
-author: AYJF<jimenezfernandezalvaro@gmail.com>
 homepage: https://github.com/AYJF/wiz
 
 environment:
