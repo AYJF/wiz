@@ -11,6 +11,14 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
+
+
+💥 A Dart connector for WiZ devices.💥
+
+![FL Chart Logo](https://github.com/imaNNeo/fl_chart/raw/master/repo_files/images/landing_logo.jpg)
+![FL Chart Logo](https://www.wizconnected.com/content/dam/wiz/master/logo-wiz-white.svg)
+
+
 TODO: Put a short description of the package here that helps potential users
 know whether this package might be useful for them.
 
@@ -19,6 +27,9 @@ know whether this package might be useful for them.
 TODO: List what your package can do. Maybe include images, gifs, or videos.
 
 ## Getting started
+
+
+The discovery works with a UDP Broadcast request and collects all bulbs in the network.
 
 TODO: List prerequisites and provide or point to information on how to
 start using the package.
