@@ -1,3 +1,7 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* A Dart connector for WiZ devices only a few features are implementing right now
+
+* List devices
+
+* turn On/Off the devices
