@@ -11,32 +11,46 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
-
-
 💥 A Dart connector for WiZ devices.💥
-
-
-
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- wiz discovery devices
+- turn On/Off
 
 ## Getting started
 
-
 The discovery works with a UDP Broadcast request and collects all bulbs in the network.
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+WizLight(): Creates an instance of a WiZ Light Bulb. Constructed with the IP of the bulb.
 
 ## Usage
 
+Discover all bulbs in the network via broadcast datagram (UDP).
+function takes the discovery object and returns a list of wizlight objects.
+
+NOTE: please use wifiBroadcast value return by the function 
 
 ```dart
+    final info = NetworkInfo();
+    final wifiBroadcast = await info.getWifiBroadcast();
+ ```
+
+as broadcast space, for avoiding issues when you running the project in your physical device.
+
+```dart
+ await findWizlights(broadcastSpace: wifiBroadcast ?? "255.255.255.255");
+
+ ```
+
+# Example UDP request
+
+Send message to the bulb: {"method":"setPilot","params":{"r":255,"g":255,"b":255,"dimming":50}} Response: {"method":"setPilot","env":"pro","result":{"success":true}}
+
+Get state of the bulb: {"method":"getPilot","params":{}} Responses:
+
+```dart
+import 'package:example/light_control.dart';
 import 'package:flutter/material.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:wiz/wiz.dart';
@@ -72,15 +86,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -144,22 +149,31 @@ class _Bulb extends StatefulWidget {
 }
 
 class __BulbState extends State<_Bulb> {
-  bool lightOn = false;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
+    return FutureBuilder<Map<String, dynamic>>(
         future: widget.wizLight.status(),
-        builder: (context, snapshot) {
+        builder: (_, snapshot) {
           if (snapshot.hasData) {
-            lightOn = snapshot.data ?? false;
             return GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LightControl(
+                            wizLight: widget.wizLight,
+                          )),
+                );
+              },
               child: ListTile(
                   leading: const Icon(Icons.light),
                   title: Text(widget.wizLight.ip),
                   subtitle: Text(widget.wizLight.mac),
-                  trailing:
-                      _Switch(lightOn: lightOn, wizLight: widget.wizLight)),
+                  trailing: _Switch(
+                      lightOn: snapshot.data?.keys.contains('result') ?? false
+                          ? snapshot.data?['result']?['state'] ?? false
+                          : false,
+                      wizLight: widget.wizLight)),
             );
           } else {
             return Container();
@@ -182,7 +196,14 @@ class _Switch extends StatefulWidget {
 }
 
 class _SwitchState extends State<_Switch> {
-  bool isLo = false;
+  late bool isLo;
+
+  @override
+  void initState() {
+    isLo = widget.lightOn;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Switch(
@@ -194,7 +215,7 @@ class _SwitchState extends State<_Switch> {
         });
         !isLo
             ? widget.wizLight.turnOff()
-            : widget.wizLight.turnOn(PilotBuilder());
+            : widget.wizLight.turnOn(PilotBuilder(brightness: 255));
       },
     );
   }
@@ -204,6 +225,5 @@ class _SwitchState extends State<_Switch> {
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+This package was only tested under iOS Operative System.
+This package is still under development, but I will do everything in my power to finish it as soon as possible. For now feel free to try it.

@@ -1,6 +1,6 @@
 name: wiz
-description: A Dart connector for WiZ devices
-version: 0.0.1
+description: A Dart connector for WiZ devices. the comunication between the wiz bulb and the local network is using UDP protocol. For async I/O this component uses async/await DatagramTransport, which allows completely non-blocking UDP transport.
+version: 0.0.2
 homepage: https://github.com/AYJF/wiz
 
 environment:
