@@ -1,3 +1,4 @@
+import 'package:example/light_control.dart';
 import 'package:flutter/material.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:wiz/wiz.dart';
@@ -96,22 +97,31 @@ class _Bulb extends StatefulWidget {
 }
 
 class __BulbState extends State<_Bulb> {
-  bool lightOn = false;
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
+    return FutureBuilder<Map<String, dynamic>>(
         future: widget.wizLight.status(),
-        builder: (context, snapshot) {
+        builder: (_, snapshot) {
           if (snapshot.hasData) {
-            lightOn = snapshot.data ?? false;
             return GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LightControl(
+                            wizLight: widget.wizLight,
+                          )),
+                );
+              },
               child: ListTile(
                   leading: const Icon(Icons.light),
                   title: Text(widget.wizLight.ip),
                   subtitle: Text(widget.wizLight.mac),
-                  trailing:
-                      _Switch(lightOn: lightOn, wizLight: widget.wizLight)),
+                  trailing: _Switch(
+                      lightOn: snapshot.data?.keys.contains('result') ?? false
+                          ? snapshot.data?['result']?['state'] ?? false
+                          : false,
+                      wizLight: widget.wizLight)),
             );
           } else {
             return Container();
@@ -134,7 +144,14 @@ class _Switch extends StatefulWidget {
 }
 
 class _SwitchState extends State<_Switch> {
-  bool isLo = false;
+  late bool isLo;
+
+  @override
+  void initState() {
+    isLo = widget.lightOn;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Switch(
@@ -146,7 +163,7 @@ class _SwitchState extends State<_Switch> {
         });
         !isLo
             ? widget.wizLight.turnOff()
-            : widget.wizLight.turnOn(PilotBuilder());
+            : widget.wizLight.turnOn(PilotBuilder(brightness: 255));
       },
     );
   }
