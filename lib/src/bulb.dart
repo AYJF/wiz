@@ -1,10 +1,15 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:wiz/src/discovery.dart';
+import 'package:wiz/src/rgbcw.dart';
 import 'package:wiz/src/utils/utils.dart';
+
+const RGB_ORDER = ["r", "g", "b"];
 
 class WizLight {
   final String ip;
@@ -19,6 +24,22 @@ class WizLight {
 
   void setBrightness(int brightness) async {
     await _send(PilotBuilder(brightness: brightness).setPilotMessage());
+  }
+
+  void setWarmWhite(int warmWhite) async {
+    await _send(PilotBuilder(warmWhite: warmWhite).setPilotMessage());
+  }
+
+  void setColdWhite(int coldWhite) async {
+    await _send(PilotBuilder(coldWhite: coldWhite).setPilotMessage());
+  }
+
+  void setRgb(List<int> rgb) async {
+    await _send(PilotBuilder(rgb: rgb).setPilotMessage());
+  }
+
+  void setRgbw(List<int> rgbw) async {
+    await _send(PilotBuilder(rgbw: rgbw).setPilotMessage());
   }
 
   // """Turn the light on with defined message.
@@ -115,6 +136,8 @@ class PilotBuilder {
   final int? warmWhite;
   final int? coldWhite;
   final int? colorTemp;
+  final List<int>? rgb;
+  final List<int>? rgbw;
   final Map<String, dynamic> pilotParams = {};
 
   PilotBuilder({
@@ -123,16 +146,21 @@ class PilotBuilder {
     this.warmWhite,
     this.coldWhite,
     this.colorTemp,
+    this.rgb,
+    this.rgbw,
   }) {
     pilotParams["state"] = state;
     if (brightness != null) _setBrightness(brightness!);
     if (warmWhite != null) _setWarmWhite(warmWhite!);
     if (coldWhite != null) _setColdWhite(coldWhite!);
     if (colorTemp != null) _setColorTemp(colorTemp!);
+    if (rgb != null) _setRgb(rgb!);
+    if (rgbw != null) _setRgbw(rgbw!);
   }
 
   //  """Return the pilot message."""
   Map<String, dynamic> setPilotMessage() {
+    debugPrint('{"method": "setPilot", "params": pilotParams}');
     return {"method": "setPilot", "params": pilotParams};
   }
 
@@ -160,11 +188,40 @@ class PilotBuilder {
     // normalize the kelvin values - should be removed
     pilotParams["temp"] = min(10000, max(1000, kelvin));
   }
+
+  //"""Set the RGB color state of the bulb."""
+  void _setRgb(List<int> rgb) {
+    _rgbInRangeOrRaise(rgb);
+
+    //     # Get the RGB+CW values
+    Map<String, dynamic> res = rgb2rgbcw(rgb);
+
+    List rgbOut = res['rgb'];
+    int? cw = res['cw']?.toInt();
+
+    pilotParams.addAll(Map.fromIterables(RGB_ORDER, rgbOut));
+
+    if (cw != null) _setWarmWhite(cw);
+  }
+
+  void _rgbInRangeOrRaise(List<int> rgb) {
+    if (0 > rgb[0] && rgb[0] >= 256) {
+      throw const FormatException("Red is not in range between 0-255.");
+    }
+    if (0 > rgb[1] && rgb[0] >= 256) {
+      throw const FormatException("Green is not in range between 0-255.");
+    }
+    if (0 > rgb[2] && rgb[0] >= 256) {
+      throw const FormatException("lue is not in range between 0-255.");
+    }
+  }
+
+  //   """Set the RGBW color state of the bulb."""
+  void _setRgbw(List<int> rgbw) {
+    _rgbInRangeOrRaise(rgbw);
+
+    List<int> rgb = rgbw.getRange(0, 3).toList();
+    pilotParams.addAll(Map.fromIterables(RGB_ORDER, rgb));
+    _setWarmWhite(rgbw[3]);
+  }
 }
-
-
-    // def get_brightness(self) -> Optional[int]:
-    //     """Get the value of the brightness 0-255."""
-    //     if "dimming" in self.pilotResult:
-    //         return percent_to_hex(self.pilotResult["dimming"])
-    //     return None

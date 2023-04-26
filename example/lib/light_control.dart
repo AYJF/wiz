@@ -33,7 +33,7 @@ class _LightControlState extends State<LightControl> {
             Slider(
               value: _currentSliderValue,
               max: 255,
-              divisions: 255,
+              divisions: 10,
               label: _currentSliderValue.round().toString(),
               onChanged: (double value) {
                 setState(() {
@@ -43,6 +43,21 @@ class _LightControlState extends State<LightControl> {
                 widget.wizLight.setBrightness(value.round());
               },
             ),
+            FloatingActionButton(
+                child: const Icon(Icons.color_lens),
+                onPressed: () {
+                  widget.wizLight.setRgb([125, 0, 0]);
+                }),
+            FloatingActionButton(
+                child: const Icon(Icons.color_lens),
+                onPressed: () {
+                  widget.wizLight.setColdWhite(255);
+                }),
+            FloatingActionButton(
+                child: const Icon(Icons.color_lens),
+                onPressed: () {
+                  widget.wizLight.setWarmWhite(255);
+                })
           ],
         ),
       ),

@@ -24,12 +24,27 @@ The discovery works with a UDP Broadcast request and collects all bulbs in the n
 
 WizLight(): Creates an instance of a WiZ Light Bulb. Constructed with the IP of the bulb.
 
+# Bulb paramters (UDP RAW)
+
+sceneId - calls one of the predefined scenes (int from 1 to 32) List of names in code
+speed - sets the color changing speed in percent
+dimming - sets the dimmer of the bulb in percent
+temp - sets the color temperature in kelvins
+r - red color range 0-255
+g - green color range 0-255
+b - blue color range 0-255
+c - cold white range 0-255
+w - warm white range 0-255
+id - the bulb id
+state - whether it's on or off
+schdPsetId - rhythm id of the room
+
 ## Usage
 
 Discover all bulbs in the network via broadcast datagram (UDP).
 function takes the discovery object and returns a list of wizlight objects.
 
-NOTE: please use wifiBroadcast value return by the function 
+NOTE: please use wifiBroadcast value return by the function
 
 ```dart
     final info = NetworkInfo();
@@ -39,8 +54,7 @@ NOTE: please use wifiBroadcast value return by the function
 as broadcast space, for avoiding issues when you running the project in your physical device.
 
 ```dart
- await findWizlights(broadcastSpace: wifiBroadcast ?? "255.255.255.255");
-
+    await findWizlights(broadcastSpace: wifiBroadcast ?? "255.255.255.255");
  ```
 
 # Example UDP request

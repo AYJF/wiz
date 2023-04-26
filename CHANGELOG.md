@@ -6,14 +6,20 @@
 
 * turn On/Off the devices
 
-## 0.0.2 
+## 0.0.2
 
 * Get device status
 
-* set brightness
+* set/get brightness
 
-* set Warm White
+* set/get Warm White
 
-* set Cold White
+* set/get Cold White
 
-* set Color Temp
+* set/get Color Temp
+
+## 0.0.3
+
+* set rgb
+
+* set rgbw
