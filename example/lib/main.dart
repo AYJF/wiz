@@ -100,7 +100,7 @@ class __BulbState extends State<_Bulb> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
-        future: widget.wizLight.status(),
+        future: widget.wizLight.status,
         builder: (_, snapshot) {
           if (snapshot.hasData) {
             return GestureDetector(
@@ -114,7 +114,11 @@ class __BulbState extends State<_Bulb> {
                 );
               },
               child: ListTile(
-                  leading: const Icon(Icons.light),
+                  leading: Icon(
+                    Icons.light,
+                    color: Color.fromRGBO(widget.wizLight.rgb[0],
+                        widget.wizLight.rgb[1], widget.wizLight.rgb[2], 1),
+                  ),
                   title: Text(widget.wizLight.ip),
                   subtitle: Text(widget.wizLight.mac),
                   trailing: _Switch(

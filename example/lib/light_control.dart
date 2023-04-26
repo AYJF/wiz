@@ -15,6 +15,7 @@ class _LightControlState extends State<LightControl> {
   @override
   void initState() {
     _currentSliderValue = widget.wizLight.brightness.toDouble();
+
     super.initState();
   }
 
@@ -43,21 +44,32 @@ class _LightControlState extends State<LightControl> {
                 widget.wizLight.setBrightness(value.round());
               },
             ),
-            FloatingActionButton(
-                child: const Icon(Icons.color_lens),
-                onPressed: () {
-                  widget.wizLight.setRgb([125, 0, 0]);
-                }),
-            FloatingActionButton(
-                child: const Icon(Icons.color_lens),
-                onPressed: () {
-                  widget.wizLight.setColdWhite(255);
-                }),
-            FloatingActionButton(
-                child: const Icon(Icons.color_lens),
-                onPressed: () {
-                  widget.wizLight.setWarmWhite(255);
-                })
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FloatingActionButton(
+                      heroTag: const Text('rgb'),
+                      child: const Icon(Icons.color_lens),
+                      onPressed: () {
+                        widget.wizLight.setRgb([125, 0, 0]);
+                      }),
+                  FloatingActionButton(
+                      heroTag: const Text('cw'),
+                      child: const Icon(Icons.cloud_off),
+                      onPressed: () {
+                        widget.wizLight.setColdWhite(255);
+                      }),
+                  FloatingActionButton(
+                      heroTag: const Text('ww'),
+                      child: const Icon(Icons.brightness_1),
+                      onPressed: () {
+                        widget.wizLight.setWarmWhite(255);
+                      })
+                ],
+              ),
+            ),
           ],
         ),
       ),
