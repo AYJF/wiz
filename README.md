@@ -17,6 +17,11 @@ and the Flutter guide for
 
 - wiz discovery devices
 - turn On/Off
+- set/get rgb
+- get temp
+- set cold white
+- set warm white
+- set/get brightness
 
 ## Getting started
 
