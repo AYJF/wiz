@@ -23,3 +23,9 @@
 * set rgb
 
 * set rgbw
+
+## 0.0.4
+
+* get rgb from the bulb
+
+* get temp from the bulb

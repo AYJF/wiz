@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -57,7 +58,7 @@ class WizLight {
     });
   }
 
-  Future<Map<String, dynamic>> status() async {
+  Future<Map<String, dynamic>> get status async {
     try {
       final res =
           await _sendAdnWaitForResponse({"method": "getPilot", "params": {}});
@@ -71,6 +72,8 @@ class WizLight {
   }
 
   int get brightness => pilotParser.brightness;
+  int get colortemp => pilotParser.colortemp;
+  List<int> get rgb => pilotParser.rgb;
 
   // """Serialize a dict to json and send it to device over UDP."""
   Future<void> _send(Map<String, dynamic> msgDict) async {
@@ -85,6 +88,7 @@ class WizLight {
       Map<String, dynamic> msgDict) async {
     await _ensureConnection();
     late Map<String, dynamic> resp;
+
     datagramSocket.send(
         utf8.encode(json.encode(msgDict)), InternetAddress(ip), port);
 
@@ -114,7 +118,7 @@ class WizLight {
     await Future.delayed(const Duration(seconds: 1));
   }
 
-  //     """Ensure we are connected."""
+  // """Ensure we are connected."""
   Future<void> _ensureConnection() async {
     datagramSocket =
         await RawDatagramSocket.bind(InternetAddress.anyIPv4, PORT);
@@ -128,6 +132,22 @@ class PilotParser {
   final Map<String, dynamic> pilotResult;
 
   int get brightness => percentToHex(pilotResult["dimming"]);
+  int get colortemp =>
+      pilotResult.containsKey('temp') ? pilotResult["temp"] : 0;
+
+  List<int> get rgb {
+    if (pilotResult.containsKey(RGB_ORDER[0]) &&
+        pilotResult.containsKey(RGB_ORDER[1]) &&
+        pilotResult.containsKey(RGB_ORDER[2])) {
+      return [
+        pilotResult[RGB_ORDER[0]],
+        pilotResult[RGB_ORDER[1]],
+        pilotResult[RGB_ORDER[2]],
+      ];
+    }
+
+    return [0, 0, 0];
+  }
 }
 
 class PilotBuilder {

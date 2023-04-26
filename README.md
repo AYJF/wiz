@@ -26,18 +26,18 @@ WizLight(): Creates an instance of a WiZ Light Bulb. Constructed with the IP of 
 
 # Bulb paramters (UDP RAW)
 
-sceneId - calls one of the predefined scenes (int from 1 to 32) List of names in code
-speed - sets the color changing speed in percent
-dimming - sets the dimmer of the bulb in percent
-temp - sets the color temperature in kelvins
-r - red color range 0-255
-g - green color range 0-255
-b - blue color range 0-255
-c - cold white range 0-255
-w - warm white range 0-255
-id - the bulb id
-state - whether it's on or off
-schdPsetId - rhythm id of the room
+- sceneId - calls one of the predefined scenes (int from 1 to 32) List of names in code
+- speed - sets the color changing speed in percent
+- dimming - sets the dimmer of the bulb in percent
+- temp - sets the color temperature in kelvins
+- r - red color range 0-255
+- g - green color range 0-255
+- b - blue color range 0-255
+- c - cold white range 0-255
+- w - warm white range 0-255
+- id - the bulb id
+- state - whether it's on or off
+- schdPsetId - rhythm id of the room
 
 ## Usage
 
@@ -166,7 +166,7 @@ class __BulbState extends State<_Bulb> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
-        future: widget.wizLight.status(),
+        future: widget.wizLight.status,
         builder: (_, snapshot) {
           if (snapshot.hasData) {
             return GestureDetector(
@@ -180,7 +180,11 @@ class __BulbState extends State<_Bulb> {
                 );
               },
               child: ListTile(
-                  leading: const Icon(Icons.light),
+                  leading: Icon(
+                    Icons.light,
+                    color: Color.fromRGBO(widget.wizLight.rgb[0],
+                        widget.wizLight.rgb[1], widget.wizLight.rgb[2], 1),
+                  ),
                   title: Text(widget.wizLight.ip),
                   subtitle: Text(widget.wizLight.mac),
                   trailing: _Switch(
@@ -234,6 +238,8 @@ class _SwitchState extends State<_Switch> {
     );
   }
 }
+
+
 
 ```
 
