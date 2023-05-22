@@ -22,6 +22,7 @@ and the Flutter guide for
 - set cold white
 - set warm white
 - set/get brightness
+- set scene
 
 ## Getting started
 

@@ -12,6 +12,42 @@ import 'package:wiz/src/utils/utils.dart';
 
 const RGB_ORDER = ["r", "g", "b"];
 
+const SCENES = {
+  1: "Ocean",
+  2: "Romance",
+  3: "Sunset",
+  4: "Party",
+  5: "Fireplace",
+  6: "Cozy",
+  7: "Forest",
+  8: "Pastel Colors",
+  9: "Wake up",
+  10: "Bedtime",
+  11: "Warm White",
+  12: "Daylight",
+  13: "Cool white",
+  14: "Night light",
+  15: "Focus",
+  16: "Relax",
+  17: "True colors",
+  18: "TV time",
+  19: "Plantgrowth",
+  20: "Spring",
+  21: "Summer",
+  22: "Fall",
+  23: "Deepdive",
+  24: "Jungle",
+  25: "Mojito",
+  26: "Club",
+  27: "Christmas",
+  28: "Halloween",
+  29: "Candlelight",
+  30: "Golden white",
+  31: "Pulse",
+  32: "Steampunk",
+  1000: "Rhythm",
+};
+
 class WizLight {
   final String ip;
   final int port;
@@ -41,6 +77,10 @@ class WizLight {
 
   void setRgbw(List<int> rgbw) async {
     await _send(PilotBuilder(rgbw: rgbw).setPilotMessage());
+  }
+
+  void setScene(int sceneId) async {
+    await _send(PilotBuilder(sceneId: sceneId).setPilotMessage());
   }
 
   // """Turn the light on with defined message.
@@ -156,6 +196,7 @@ class PilotBuilder {
   final int? warmWhite;
   final int? coldWhite;
   final int? colorTemp;
+  final int? sceneId;
   final List<int>? rgb;
   final List<int>? rgbw;
   final Map<String, dynamic> pilotParams = {};
@@ -168,6 +209,7 @@ class PilotBuilder {
     this.colorTemp,
     this.rgb,
     this.rgbw,
+    this.sceneId,
   }) {
     pilotParams["state"] = state;
     if (brightness != null) _setBrightness(brightness!);
@@ -176,6 +218,7 @@ class PilotBuilder {
     if (colorTemp != null) _setColorTemp(colorTemp!);
     if (rgb != null) _setRgb(rgb!);
     if (rgbw != null) _setRgbw(rgbw!);
+    if (sceneId != null) _setSceneId(sceneId!);
   }
 
   //  """Return the pilot message."""
@@ -189,6 +232,12 @@ class PilotBuilder {
     int percent = hexToPercent(hex);
     assert(percent < 101);
     pilotParams['dimming'] = max(10, percent);
+  }
+
+  // """Set the scene by id.  1 to 32  """
+  void _setSceneId(int sceneId) {
+    assert(SCENES.containsKey(sceneId));
+    pilotParams['sceneId'] = sceneId;
   }
 
   // """Set the value of the warm white led."""

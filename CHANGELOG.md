@@ -29,3 +29,8 @@
 * get rgb from the bulb
 
 * get temp from the bulb
+
+## 0.0.5
+
+* set sceneId
+
